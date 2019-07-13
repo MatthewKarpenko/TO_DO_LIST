@@ -1,10 +1,14 @@
 $main-color: #0C1013;
 $white-color: white;
 $second-color: #1A1C20;
+@import url('https://fonts.googleapis.com/css?family=Rubik&display=swap');
 
 body {
     background-color: $main-color;
     color: $white-color;
+    font-family: 'Rubik', sans-serif;
+    letter-spacing: 1px;
+    font-size: 15px;
 }
 
 .app-name {
@@ -13,6 +17,6 @@ body {
 
 .main-components {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
 }

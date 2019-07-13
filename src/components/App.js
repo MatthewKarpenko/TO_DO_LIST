@@ -7,8 +7,12 @@ import "../app.scss";
 function App() {
   return (
     <div className="App">
-      <h1 className="app-name">List</h1>
-      <div className='main-components'>
+      <h1 className="app-name">
+        List
+        
+      </h1>
+
+      <div className="main-components">
         <NoteCreation />
         <NotesList />
       </div>

@@ -1,49 +1,8 @@
 import React from "react";
 import { Modal, Button, Header, Icon } from "semantic-ui-react";
+import { connect } from "react-redux";
+import { deleteNote } from '../actions'
 
-// const AskDeleteModal = React.forwardRef((props, ref) => {
-//   const state = {
-//     showModal: false
-//   }
-
-//   closeModal = () => this.setState({ showModal: false });
-
-//         return (
-//           <Modal
-//             trigger={
-//               <p onClick={this.setState({ showModal: true })}>
-//                 Удалить
-//               </p>
-//             }
-//             basic
-//             size="small"
-//             style={{ margin: "auto" }}
-//             open={this.state.showModal}
-//           >
-//             <Header icon={props.icon} content={props.headerText} />
-//             <Modal.Content>
-//               <p>{props.extraInfo}</p>
-//             </Modal.Content>
-//             <Modal.Actions>
-//               <Button basic color="red" inverted>
-//                 <Icon name="remove" /> Нет
-//               </Button>
-//               <Button
-//                 onClick={() => {
-//                   this.setState({ showModal: true });
-//                   ref.current.remove();
-//                 }}
-//                 color="blue"
-//                 style={{ color: "white" }}
-//                 inverted
-//               >
-//                 <Icon name="checkmark" /> Да
-//               </Button>
-//             </Modal.Actions>
-//           </Modal>
-//         );
-
-// })
 
 class AskDeleteModal extends React.Component {
   constructor(props) {
@@ -55,13 +14,11 @@ class AskDeleteModal extends React.Component {
     return (
       <Modal
         trigger={
-          <p
+          <i className='icon trash'
             onClick={() => {
               this.setState({ showModal: true });
             }}
-          >
-            Удалить
-          </p>
+          />
         }
         basic
         size="small"
@@ -73,7 +30,14 @@ class AskDeleteModal extends React.Component {
           <p>{this.props.extraInfo}</p>
         </Modal.Content>
         <Modal.Actions>
-          <Button basic color="red" inverted>
+          <Button
+            basic
+            color="red"
+            onClick={() => {
+              this.setState({ showModal: false });
+            }}
+            inverted
+          >
             <Icon name="remove" /> Нет
           </Button>
           <Button
@@ -92,4 +56,8 @@ class AskDeleteModal extends React.Component {
   }
 }
 
-export default AskDeleteModal;
+
+
+export default connect(null,{deleteNote})(AskDeleteModal)
+
+

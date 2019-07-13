@@ -9,11 +9,13 @@ const fetchAllNotes = (state = [],action) => {
 }
 
 const createNote = (state = [], action) => {
-    switch(action.type) {
-        case 'POST_NOTE':
-            return [...state, action.data]
-        default:
-            return state
+    switch (action.type) {
+      case "POST_NOTE":
+        return [...state, action.data];
+      case "DELETE_POST":
+        return state.filter(post => post.id !== action.id);
+      default:
+        return state;
     }
 }
 
