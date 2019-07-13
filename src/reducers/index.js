@@ -11,7 +11,6 @@ const fetchAllNotes = (state = [],action) => {
 const createNote = (state = [], action) => {
     switch(action.type) {
         case 'POST_NOTE':
-            console.log(state)
             return [...state, action.data]
         default:
             return state

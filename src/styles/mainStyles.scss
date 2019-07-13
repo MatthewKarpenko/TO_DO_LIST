@@ -1,11 +1,18 @@
 $main-color: #0C1013;
-$second-color: white;
+$white-color: white;
+$second-color: #1A1C20;
 
 body {
     background-color: $main-color;
-    color: $second-color;
+    color: $white-color;
 }
 
 .app-name {
     text-align: center;
+}
+
+.main-components {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }

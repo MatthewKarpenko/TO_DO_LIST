@@ -3,10 +3,10 @@
 import axiosConfig from '../apis/axiosConfig';
 
 export const fetchNotes = () => {
-    return async dispatch => {
-    const response = await axiosConfig.get('/api/v1/notes');
-
-    dispatch({ type: "FETCH_NOTES", payload: response.data.notes });
+    return  dispatch => {
+   return axiosConfig.get('/api/v1/notes')
+   .then(response =>  dispatch({ type: "FETCH_NOTES", payload: response.data.notes }))
+   .catch(err => console.log(err))
     }
 };
 
