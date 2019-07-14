@@ -2,10 +2,14 @@ import { combineReducers } from 'redux';
 
 
 const fetchAllNotes = (state = [],action) => {
-    if (action.type === "FETCH_NOTES") {
+    switch (action.type) {
+      case "FETCH_NOTES" :
         return action.payload
+      case"FETCH_ERROR":
+        return action.payload
+      default:
+        return state
     }
-    return state
 }
 
 const createNote = (state = [], action) => {

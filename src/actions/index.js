@@ -7,7 +7,9 @@ export const fetchNotes = () => {
       .then(response => 
         dispatch({ type: "FETCH_NOTES", payload: response.data.notes })
       )
-      .catch(err => console.log('htll'));
+      .catch(err =>{ 
+        dispatch({ type: "FETCH_ERROR", payload: 'Problems with server occured, refresh page' });
+      })
   };
 
   // const response = await axiosConfig.get('/api/v1/notes')

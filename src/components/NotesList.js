@@ -3,15 +3,17 @@ import { connect } from "react-redux";
 import { Accordion, Icon, Segment, Dropdown } from "semantic-ui-react";
 
 import { fetchNotes } from "../actions";
-import NoteModal from './NoteModal';
 import AskDeleteModal from './AskDeleteModal';
+import SnackBar from "./SnackBar";
 
 class NotesList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       notesArr: [],
-      activeIndex: 0
+      activeIndex: 0,
+      messageStatus: false,
+      message: ''
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -26,23 +28,18 @@ class NotesList extends Component {
   };
 
   async componentDidMount() {
-    this.props.fetchNotes().then(response => {
-      this.setState({ notesArr: response.payload.reverse() })
-    })
-    .catch(err => console.log(err));
+     await this.props.fetchNotes();
+     if(typeof this.props.notes !== 'string'){
+      this.setState({ notesArr: this.props.notes.reverse().slice(1) });
+      
+     }else {
+       this.setState({
+         messageStatus: true,
+         message: 'Something went wrong with server, please reload the page'
+        })
+     }
   }
 
-  // renderList(arr) {
-  //   const newArr = [];
-  //   arr.map(notes => {
-  //     newArr.unshift(
-  //       <div key={notes.id} className='note-title-container'>
-  //         <p>{notes.title}</p>
-  //       </div>
-  //     );
-  //   });
-  //   this.setState({ notesArr: newArr });
-  // }
 
   render() {
     const { activeIndex } = this.state;
@@ -85,6 +82,8 @@ class NotesList extends Component {
                           />
                         }
                       />
+                      <Dropdown.Item  children={ <i className='icon sync'></i>}/>
+                     
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
@@ -92,12 +91,16 @@ class NotesList extends Component {
             })}
           </Accordion>
         </Segment>
+        <SnackBar 
+        status={this.state.messageStatus} 
+        messageType={'err-snackBar'}
+        content={this.state.message}
+        />
       </div>
     );
   }
 }
 
-{/* <div className="notes-holder">{this.state.notesArr.map(note => note)}</div>; */}
 
 const mapStateToProps = state => {
   return { notes: state.existedNotes };
