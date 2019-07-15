@@ -2,9 +2,8 @@ import React from "react";
 import { Modal, Button, Header, Icon } from "semantic-ui-react";
 import { connect } from "react-redux";
 
-import { deleteNote } from '../actions';
-import SnackBar from './SnackBar'
-
+import { deleteNote, fetchNotes } from "../actions";
+import SnackBar from "./SnackBar";
 
 class AskDeleteModal extends React.Component {
   constructor(props) {
@@ -12,33 +11,28 @@ class AskDeleteModal extends React.Component {
     this.state = {
       showModal: false,
       messageStatus: false,
-      messageType: '',
-      message: ''
+      messageType: "",
+      message: ""
     };
-    this.deleteNote = this.deleteNote.bind(this)
+    this.deleteNote = this.deleteNote.bind(this);
   }
 
- deleteNote = async () => {
-    await this.props.deleteNote(this.props.noteId)
-    console.log(this.props.deletedNote)
-     if (this.props.deletedNote === 204){
-      document.getElementById(`${this.props.noteId}`).remove();
+  deleteNote = async () => {
+    await this.props.deleteNote(this.props.noteId);
+    await console.log(this.props.showError);
+    if (!this.props.showError) {
+      this.props.fetchNotes();
       this.setState({
-        showModal: false,
-        messageStatus: true,
-        messageType: 'succes-snackBar',
-        message:
-          "Note was succesfully deleted"
+        showModal: false
       });
-     }else {
-       this.setState({
-         messageStatus: true,
-         messageType: "err-snackBar",
-         message:
-           "Something went wrong with server, please reload the page"
-       });
-     }
-  }
+    } else {
+      this.setState({
+        messageStatus: true,
+        messageType: "err-snackBar",
+        message: "Something went wrong with server, please try again"
+      });
+    }
+  };
 
   render() {
     return (
@@ -91,9 +85,10 @@ class AskDeleteModal extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return { deletedNote: state.deleteNote };
+  return { deletedNote: state.deleteNote, showError: state.showError };
 };
 
-export default connect(mapStateToProps,{deleteNote})(AskDeleteModal)
-
-
+export default connect(
+  mapStateToProps,
+  { deleteNote, fetchNotes }
+)(AskDeleteModal);

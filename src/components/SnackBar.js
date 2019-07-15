@@ -10,27 +10,29 @@ class ErrorSnackBar extends Component {
     this.toggleVisibility = this.toggleVisibility.bind(this);
   }
 
-  toggleVisibility () {
+  toggleVisibility() {
     this.setState(prevState => ({ visible: !prevState.visible }));
     setTimeout(() => {
-         this.setState(prevState => ({ visible: !prevState.visible }));
-    },3000)
+      this.setState(prevState => ({ visible: !prevState.visible }));
+    }, 3000);
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.status) {
-    this.toggleVisibility();    }
+      this.toggleVisibility();
+    }
   }
 
   render() {
-    const { visible } = this.state
+    const { visible } = this.state;
     return (
       <Transition visible={visible} animation="fade down" duration={400}>
-        <Message
-          className={`${this.props.messageType} snackBar`}
-        >
+        <Message className={`${this.props.messageType}  snackBar`}>
           {this.props.content}
-          <i onClick={this.toggleVisibility} className="closeMessageIcon icon x icon" />
+          <i
+            onClick={this.toggleVisibility}
+            className="closeMessageIcon icon x icon"
+          />
         </Message>
       </Transition>
     );

@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Header, Modal, Transition } from "semantic-ui-react";
-import { postNote, fetchNotes } from "../actions";
 
-class NoteCreation extends Component {
+import { updateNote, fetchNotes } from "../actions";
+
+class UpdateNote extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: "",
-      content: "",
+      title: this.props.noteTitle,
+      content: this.props.noteContent,
       showModal: false,
       isOpen: false,
       visible: false
@@ -23,7 +24,6 @@ class NoteCreation extends Component {
     this.firstLetterUpperCase = this.firstLetterUpperCase.bind(this);
     this.toggleVisibility = this.toggleVisibility.bind(this);
   }
-
   toggleVisibility() {
     this.setState(prevState => ({ visible: !prevState.visible }));
     setTimeout(() => {
@@ -54,6 +54,7 @@ class NoteCreation extends Component {
 
   handleSubmit = async e => {
     e.preventDefault();
+    console.log(this.props.noteId);
     if (this.state.title !== "" && this.state.content !== "") {
       const title = this.state.title;
       const content = this.state.content;
@@ -61,7 +62,7 @@ class NoteCreation extends Component {
         title,
         content
       };
-      await this.props.postNote({ type: "POST_NOTE", payload: data });
+      await this.props.updateNote(data, this.props.noteId);
 
       if (this.props.showError) {
         this.setState({
@@ -99,71 +100,68 @@ class NoteCreation extends Component {
   render() {
     const { visible, errorMessage, showModal } = this.state;
     return (
-      <div>
-        <Modal
-          onClose={this.closeModal}
-          open={showModal}
-          trigger={
-            <div className="note-creation-holder">
-              <i
-                className="plus circle icon big modal-creationPost-trigger"
-                onClick={() => this.setState({ showModal: true })}
-              />
-            </div>
-          }
-          closeIcon
-          style={{ margin: "auto" }}
-        >
-          <Header icon="paper plane outline" content="Add new note" />
+      <Modal
+        onClose={this.closeModal}
+        open={showModal}
+        trigger={
+          <i
+            className="sync icon "
+            onClick={() => this.setState({ showModal: true })}
+          />
+        }
+        closeIcon
+        style={{ margin: "auto" }}
+      >
+        <Header icon="paper plane outline" content="Add new note" />
 
-          <Modal.Content>
-            <div className="content">
-              <div className="ui form">
-                <h4 className="ui dividing header">Track your tasks</h4>
+        <Modal.Content>
+          <div className="content">
+            <div className="ui form">
+              <h4 className="ui dividing header">Track your tasks</h4>
 
-                <div className="field">
-                  <label>Title</label>
-                  <textarea
-                    className="title-textarea"
-                    ref={this.getTitle}
-                    value={this.state.title}
-                    onChange={this.textTitle}
-                    onBlur={this.firstLetterUpperCase}
-                    name="title"
-                  />
-                </div>
-                <div className="field">
-                  <label>Content</label>
-                  <textarea
-                    ref={this.getContent}
-                    value={this.state.content}
-                    onChange={this.textContent}
-                  />
-                </div>
+              <div className="field">
+                <label>Title</label>
+                <textarea
+                  className="title-textarea"
+                  ref={this.getTitle}
+                  value={this.state.title}
+                  onChange={this.textTitle}
+                  onBlur={this.firstLetterUpperCase}
+                  name="title"
+                />
+              </div>
+              <div className="field">
+                <label>Content</label>
+                <textarea
+                  value={this.state.content}
+                  ref={this.getContent}
+                  onChange={this.textContent}
+                />
               </div>
             </div>
-          </Modal.Content>
-          <Transition visible={visible} animation="scale" duration={300}>
-            <p className="error">{errorMessage}</p>
-          </Transition>
-          <div className="actions">
-            <div className="ui button" onClick={this.clearNewPost}>
-              Cancel
-            </div>
-            <div className="ui positive button" onClick={this.handleSubmit}>
-              Add
-            </div>
           </div>
-        </Modal>
-      </div>
+        </Modal.Content>
+        <Transition visible={visible} animation="scale" duration={300}>
+          <p className="error">{errorMessage}</p>
+        </Transition>
+        <div className="actions">
+          <div className="ui button" onClick={this.clearNewPost}>
+            Cancel
+          </div>
+          <div className="ui positive button" onClick={this.handleSubmit}>
+            Add
+          </div>
+        </div>
+      </Modal>
     );
   }
 }
+
 const mapStateToProps = state => {
-  return { createdNotes: state.createdNotes, showError: state.showError };
+  return { updatedNote: state.updatedNotes, showError: state.showError };
 };
 
 export default connect(
   mapStateToProps,
-  { postNote, fetchNotes }
-)(NoteCreation);
+  { updateNote, fetchNotes }
+)(UpdateNote);

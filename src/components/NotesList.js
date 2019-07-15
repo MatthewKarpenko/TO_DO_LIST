@@ -6,6 +6,7 @@ import NoteCreation from "./NoteCreation";
 import { fetchNotes } from "../actions";
 import AskDeleteModal from "./AskDeleteModal";
 import SnackBar from "./SnackBar";
+import UpdateNote from "./UpdateNote";
 
 class NotesList extends Component {
   constructor(props) {
@@ -31,7 +32,6 @@ class NotesList extends Component {
 
   async componentDidMount() {
     await this.props.fetchNotes();
-    await console.log(this.props.notes + "dlk");
     if (typeof this.props.notes[0] === "string") {
       this.setState({
         messageStatus: true,
@@ -78,7 +78,15 @@ class NotesList extends Component {
                   />
                 }
               />
-              <Dropdown.Item children={<i className="icon sync" />} />
+              <Dropdown.Item
+                children={
+                  <UpdateNote
+                    noteId={post.id}
+                    noteContent={post.content}
+                    noteTitle={post.title}
+                  />
+                }
+              />
             </Dropdown.Menu>
           </Dropdown>
         </div>
@@ -106,8 +114,7 @@ class NotesList extends Component {
 }
 
 const mapStateToProps = state => {
-  return { notes: state.existedNotes.reverse(),
-  showError: state.showError };
+  return { notes: state.existedNotes.reverse(), showError: state.showError };
 };
 
 export default connect(
