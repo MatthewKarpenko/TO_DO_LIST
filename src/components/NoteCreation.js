@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Header, Modal, Transition } from "semantic-ui-react";
-import { postNote } from "../actions";
+import { postNote, fetchNotes } from "../actions";
 
 class NoteCreation extends Component {
   constructor(props) {
@@ -49,7 +49,7 @@ class NoteCreation extends Component {
     this.setState({ content: this.getContent.current.value });
   }
 
-  handleSubmit = e => {
+  handleSubmit = async e => {
     e.preventDefault();
     if (this.state.title !== "" && this.state.content !== "") {
       const title = this.state.title;
@@ -58,7 +58,8 @@ class NoteCreation extends Component {
         title,
         content
       };
-      this.props.postNote({ type: "POST_NOTE", payload: data });
+      await this.props.postNote({ type: "POST_NOTE", payload: data });
+      this.props.fetchNotes()
       this.setState({ title: "", content: "", showModal: false });
     } else {
       this.setState({
@@ -158,5 +159,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { postNote }
+  { postNote, fetchNotes }
 )(NoteCreation);

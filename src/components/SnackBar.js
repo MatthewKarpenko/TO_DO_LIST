@@ -28,8 +28,6 @@ class ErrorSnackBar extends Component {
       <Transition visible={visible} animation="fade down" duration={400}>
         <Message
           className={`${this.props.messageType} snackBar`}
-          // header={this.props.content}
-          // content={<i className="icon x icon" />}
         >
           {this.props.content}
           <i onClick={this.toggleVisibility} className="closeMessageIcon icon x icon" />

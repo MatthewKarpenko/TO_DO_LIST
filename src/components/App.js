@@ -13,7 +13,7 @@ function App() {
       </h1>
 
       <div className="main-components">
-        <NoteCreation />
+        
         <NotesList />
       </div>
     </div>
