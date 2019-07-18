@@ -41,6 +41,7 @@ class NotesList extends Component {
   }
 
   showNotes() {
+    
     return this.props.notes.map((post, index) => {
       return (
         <div key={post.id} id={post.id} className="note-title-container">
@@ -103,18 +104,14 @@ class NotesList extends Component {
             <Accordion inverted>{this.showNotes()}</Accordion>
           </Segment>
         </div>
-        <SnackBar
-          status={this.props.showError}
-          messageType={"err-snackBar"}
-          content={"Something went wrong with server, please reload the page"}
-        />
+       
       </div>
     );
   }
 }
 
 const mapStateToProps = state => {
-  return { notes: state.existedNotes.reverse(), showError: state.showError };
+  return { notes: state.existedNotes, showError: state.showError };
 };
 
 export default connect(

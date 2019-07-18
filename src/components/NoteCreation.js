@@ -143,7 +143,7 @@ class NoteCreation extends Component {
               </div>
             </div>
           </Modal.Content>
-          <Transition visible={visible} animation="scale" duration={300}>
+          <Transition visible={visible} animation="scale" duration={400}>
             <p className="error">{errorMessage}</p>
           </Transition>
           <div className="actions">

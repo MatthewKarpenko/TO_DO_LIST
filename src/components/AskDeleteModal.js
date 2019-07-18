@@ -2,39 +2,61 @@ import React from "react";
 import { Modal, Button, Header, Icon } from "semantic-ui-react";
 import { connect } from "react-redux";
 
-import { deleteNote, fetchNotes } from "../actions";
-import SnackBar from "./SnackBar";
+import {
+  deleteNote,
+  fetchNotes,
+  askToUndo,
+  closeUndo,
+  sendUndoResponse
+} from "../actions";
+
+
+
 
 class AskDeleteModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       showModal: false,
-      messageStatus: false,
-      messageType: "",
-      message: ""
     };
-    this.deleteNote = this.deleteNote.bind(this);
-  }
-
-  deleteNote = async () => {
-    await this.props.deleteNote(this.props.noteId);
-    await console.log(this.props.showError);
-    if (!this.props.showError) {
-      this.props.fetchNotes();
-      this.setState({
-        showModal: false
-      });
-    } else {
-      this.setState({
-        messageStatus: true,
-        messageType: "err-snackBar",
-        message: "Something went wrong with server, please try again"
-      });
+    this.timer = null
+    this.sendResponseBack = dispatch => {
+      dispatch({ type: "UNDO_RESPONSE", payload: false });
     }
+  }
+  
+  deleteNote = () => {
+    this.props.askToUndo();
+
+    this.setState({
+      showModal: false
+    });
+ 
+    document.getElementById(`${this.props.noteId}`)
+    .classList.add('hidden');
+
+    this.timer = setTimeout(async () => {
+       await this.props.deleteNote(this.props.noteId);
+       this.props.closeUndo();
+       this.props.sendUndoResponse(false);
+    },2000)
+
   };
 
+componentDidUpdate() {
+  if (this.props.undoResponse) {
+    this.props.closeUndo();
+    this.props.sendUndoResponse(false);
+    document.getElementById(`${this.props.noteId}`)
+    .classList.remove("hidden");
+    clearTimeout(this.timer);
+  }
+}  
+
+
+
   render() {
+    
     return (
       <div>
         <Modal
@@ -73,11 +95,7 @@ class AskDeleteModal extends React.Component {
               <Icon name="checkmark" /> Yes
             </Button>
           </Modal.Actions>
-          <SnackBar
-            status={this.state.messageStatus}
-            messageType={this.state.messageType}
-            content={this.state.message}
-          />
+        
         </Modal>
       </div>
     );
@@ -85,10 +103,15 @@ class AskDeleteModal extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return { deletedNote: state.deleteNote, showError: state.showError };
+  return {
+    deletedNote: state.deleteNote,
+    showError: state.showError,
+    undoResponse: state.sendUndoResponse
+    // undo: state.undo
+  };
 };
 
 export default connect(
   mapStateToProps,
-  { deleteNote, fetchNotes }
+  { deleteNote, fetchNotes, askToUndo, closeUndo, sendUndoResponse }
 )(AskDeleteModal);

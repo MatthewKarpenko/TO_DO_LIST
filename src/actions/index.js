@@ -41,3 +41,16 @@ export const updateNote = (data, id) => async dispatch => {
     })
     .catch(err => dispatch({ type: "FETCH_ERROR", payload: true }));
 };
+
+export const askToUndo = () => {
+  return { type: 'ASK_UNDO', payload: true }
+}
+
+export const closeUndo = () => {
+  return { type: 'CLOSE_UNDO', payload: false }
+}
+
+
+export const sendUndoResponse = (boolean) => {
+  return{type: 'UNDO_RESPONSE', payload: boolean}
+}

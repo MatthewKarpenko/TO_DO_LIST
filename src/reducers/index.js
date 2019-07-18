@@ -32,9 +32,41 @@ const deleteNote = (state = [], action) => {
   }
 };
 
+const showDeleteError = (state = null, action) => {
+  switch (action.type) {
+    case "DELETE_ERROR":
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
+const askToUndo = (state = false, action) => {
+  switch (action.type) {
+    case "ASK_UNDO":
+      return action.payload;
+    case "CLOSE_UNDO":
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
+const sendUndoResponse = (state = false, action) => {
+  switch (action.type) {
+    case "UNDO_RESPONSE":
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   existedNotes: fetchAllNotes,
   createdNotes: createNote,
   deleteNote: deleteNote,
-  showError
+  showError,
+  showDeleteError,
+  askToUndo,
+  sendUndoResponse
 });
