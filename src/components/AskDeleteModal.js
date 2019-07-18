@@ -10,53 +10,48 @@ import {
   sendUndoResponse
 } from "../actions";
 
-
-
-
 class AskDeleteModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showModal: false,
+      showModal: false
     };
-    this.timer = null
+    this.timer = null;
     this.sendResponseBack = dispatch => {
       dispatch({ type: "UNDO_RESPONSE", payload: false });
-    }
+    };
   }
-  
+
   deleteNote = () => {
     this.props.askToUndo();
 
     this.setState({
       showModal: false
     });
- 
-    document.getElementById(`${this.props.noteId}`)
-    .classList.add('hidden');
+
+    document.getElementById(`${this.props.noteId}`).classList.add("hidden");
 
     this.timer = setTimeout(async () => {
-       await this.props.deleteNote(this.props.noteId);
-       this.props.closeUndo();
-       this.props.sendUndoResponse(false);
-    },2000)
-
+      await this.props.deleteNote(this.props.noteId);
+      this.props.closeUndo();
+      this.props.sendUndoResponse(false);
+    }, 2000);
   };
 
-componentDidUpdate() {
-  if (this.props.undoResponse) {
-    this.props.closeUndo();
-    this.props.sendUndoResponse(false);
-    document.getElementById(`${this.props.noteId}`)
-    .classList.remove("hidden");
-    clearTimeout(this.timer);
+  componentDidUpdate() {
+    if (this.props.undoResponse) {
+      if (document.getElementById(`${this.props.noteId}`)) {
+        this.props.closeUndo();
+        this.props.sendUndoResponse(false);
+        document
+          .getElementById(`${this.props.noteId}`)
+          .classList.remove("hidden");
+        clearTimeout(this.timer);
+      }
+    }
   }
-}  
-
-
 
   render() {
-    
     return (
       <div>
         <Modal
@@ -95,7 +90,6 @@ componentDidUpdate() {
               <Icon name="checkmark" /> Yes
             </Button>
           </Modal.Actions>
-        
         </Modal>
       </div>
     );

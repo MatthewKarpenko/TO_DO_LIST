@@ -1,7 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Header, Modal, Transition } from "semantic-ui-react";
-import { postNote, fetchNotes } from "../actions";
+import {
+  postNote,
+  fetchNotes,
+  askToUndo,
+  closeUndo,
+  sendUndoResponse
+} from "../actions";
 
 class NoteCreation extends Component {
   constructor(props) {
@@ -22,6 +28,10 @@ class NoteCreation extends Component {
     this.clearNewPost = this.clearNewPost.bind(this);
     this.firstLetterUpperCase = this.firstLetterUpperCase.bind(this);
     this.toggleVisibility = this.toggleVisibility.bind(this);
+    this.timer = null;
+    this.sendResponseBack = dispatch => {
+      dispatch({ type: "UNDO_RESPONSE", payload: false });
+    };
   }
 
   toggleVisibility() {
@@ -52,34 +62,6 @@ class NoteCreation extends Component {
     this.setState({ content: this.getContent.current.value });
   }
 
-  handleSubmit = async e => {
-    e.preventDefault();
-    if (this.state.title !== "" && this.state.content !== "") {
-      const title = this.state.title;
-      const content = this.state.content;
-      const data = {
-        title,
-        content
-      };
-      await this.props.postNote({ type: "POST_NOTE", payload: data });
-
-      if (this.props.showError) {
-        this.setState({
-          errorMessage: "*Something went wrong , please, try again"
-        });
-        this.toggleVisibility();
-      } else {
-        this.props.fetchNotes();
-        this.setState({ title: "", content: "", showModal: false });
-      }
-    } else {
-      this.setState({
-        errorMessage: "*Please fill content and title"
-      });
-      this.toggleVisibility();
-    }
-  };
-
   firstLetterUpperCase(e) {
     if (e.target.value.length > 0) {
       let name = e.target.name;
@@ -93,6 +75,49 @@ class NoteCreation extends Component {
       this.setState({
         [name]: upperArray
       });
+    }
+  }
+
+  handleSubmit = async e => {
+    e.preventDefault();
+    if (this.state.title !== "" && this.state.content !== "") {
+      const title = this.state.title;
+      const content = this.state.content;
+      const data = {
+        title,
+        content
+      };
+
+      this.props.askToUndo();
+      this.props.addTodoItem(data);
+      this.setState({
+        showModal: false
+      });
+
+      this.timer = setTimeout(async () => {
+        await this.props.postNote({ type: "POST_NOTE", payload: data });
+        this.props.closeUndo();
+        this.props.sendUndoResponse(false);
+        this.setState({ title: "", content: "", showModal: false });
+        this.props.deleteNewNote();
+        this.props.fetchNotes();
+      }, 2000);
+    } else {
+      this.setState({
+        errorMessage: "*Please fill content and title"
+      });
+      this.toggleVisibility();
+    }
+  };
+
+  componentDidUpdate() {
+    if (this.props.undoResponse) {
+      console.log("hell");
+      this.props.closeUndo();
+      this.props.sendUndoResponse(false);
+      this.props.deleteNewNote();
+      clearTimeout(this.timer);
+      this.setState({ title: "", content: "", showModal: false });
     }
   }
 
@@ -160,10 +185,14 @@ class NoteCreation extends Component {
   }
 }
 const mapStateToProps = state => {
-  return { createdNotes: state.createdNotes, showError: state.showError };
+  return {
+    createdNotes: state.createdNotes,
+    showError: state.showError,
+    undoResponse: state.sendUndoResponse
+  };
 };
 
 export default connect(
   mapStateToProps,
-  { postNote, fetchNotes }
+  { postNote, fetchNotes, askToUndo, closeUndo, sendUndoResponse }
 )(NoteCreation);

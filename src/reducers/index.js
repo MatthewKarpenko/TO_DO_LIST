@@ -3,7 +3,7 @@ import { combineReducers } from "redux";
 const fetchAllNotes = (state = [], action) => {
   switch (action.type) {
     case "FETCH_NOTES":
-      return [...action.payload];
+      return [...action.payload.reverse()];
 
     default:
       return state;
